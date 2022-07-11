@@ -7,15 +7,13 @@ const [inputvalue, SetInputvalue] = useState();
 const [disablebutton, SetDisableButton] = useState(false);
 const [nameuser, SetNameUser] = useState();
 const [updatelistserver, SetUpdateListServer] = useState([])
-const [downloadlistoftasks, SetDownloadListOfTasks] = useState([]);
-const [listdownloaded, SetListDownloaded] = useState(false);
+const [downloadlistoftasks, SetDownloadListOfTasks] = useState();
 
 const catchInputValue = (event) => {
 	if (event.keyCode === 13) {
 		SetInputvalue(event.target.value);
-		// SetDownloadListOfTasks([...downloadlistoftasks, event.target.value]);
+		SetArrayoflist([...arrayoflist, event.target.value]);
 		let listitem = {label: event.target.value, done: false}
-		listdownloaded === true? (SetDownloadListOfTasks([...downloadlistoftasks, listitem])) : (SetArrayoflist([...arrayoflist, event.target.value]));
 		SetUpdateListServer([...updatelistserver, listitem])
 		event.target.value = "";
 		console.log("listitem", listitem)
@@ -27,20 +25,13 @@ console.log(inputvalue)
 // console.log("text object", "{label:", inputvalue, "done: false}")
 console.log(arrayoflist)
 console.log("server", updatelistserver)
-console.log("lista usuario existente atualizada", downloadlistoftasks)
 
 
 const removeProduct = (index) => {
-	listdownloaded? 
-		(SetDownloadListOfTasks([
-			...downloadlistoftasks.slice(0, index),
-			...downloadlistoftasks.slice(index + 1, downloadlistoftasks.length)
-		]))
-		: 
-		(SetArrayoflist([
-			...arrayoflist.slice(0, index),
-			...arrayoflist.slice(index + 1, arrayoflist.length)
-			])) ;
+	SetArrayoflist([
+	  ...arrayoflist.slice(0, index),
+	  ...arrayoflist.slice(index + 1, arrayoflist.length)
+	]);
 	SetUpdateListServer([
 		...updatelistserver.slice(0, index),
 		...updatelistserver.slice(index + 1, updatelistserver.length)
@@ -125,10 +116,7 @@ const downloadListOfUser = (Name2) => {
     .then((data) => {
         //here is were your code should start after the fetch finishes
         SetDownloadListOfTasks(data);
-		SetListDownloaded(!listdownloaded);
-		SetUpdateListServer(data);
 		console.log(data);
-		
 		 //this will print on the console the exact object received from the server
     })
 	// .then((data2) => {
@@ -146,7 +134,6 @@ const downloadListOfUser = (Name2) => {
     });
 }
 console.log("data3", downloadlistoftasks)
-console.log("lista atualizada", updatelistserver)
 
 
 const deleteUser = () => {
@@ -159,13 +146,12 @@ const deleteUser = () => {
     .catch(error => {
         console.log(error);
     });
-	window.location.reload();
 };
 
 
 useEffect(() => {
     updateListOfTasks();
-  }, [arrayoflist, downloadlistoftasks]);
+  }, [arrayoflist]);
 
 const listoftasksdownloaded = downloadlistoftasks?.map((item, indexD) => {
 	return (
@@ -239,7 +225,7 @@ const listoftasks = arrayoflist?.map((task, index) => {
 					className="border-0 col col-lg-6 list-group d-flex"
 					size="100"				
 				>
-					{listdownloaded? listoftasksdownloaded : listoftasks}
+					{listoftasksdownloaded? listoftasksdownloaded : listoftasks}
 				</ul>
 			</div>
 			<br></br>
@@ -247,11 +233,11 @@ const listoftasks = arrayoflist?.map((task, index) => {
 				<div className="d-flex justify-content-evenly col col-lg-6">
 
 					<button type="button" className="btn btn-danger btn-sm" onClick={() => {deleteUser(); window.alert("User Deleted")}}>Delete all the tasks</button>
-
+					<button type="button" className="btn btn-primary btn-sm">TESTE</button>
 				</div>
 			</div>
 			<footer className="position-absolute bottom-0 start-50 translate-middle-x text-center"> 
-   					 <h3 className="bg-light text-muted">TODO LIST with fetch. </h3>
+   					 <span className="bg-light text-muted">TODO LIST with fetch. </span>
 						<br></br>
 					 <span className="">If you create a new user all the list will be updated for this new user. </span>
 					 	<br></br>
